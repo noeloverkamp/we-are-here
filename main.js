@@ -34,7 +34,14 @@ KEY_CODES = {
     40: 'down',
     65: 'a',
     68: 'd',
+    81: 'q',
+    83: 's',
+    87: 'w',
 }
+
+var onKeyUp = function (key) {
+    
+};
 
 // Is there a key press?
 KEY_STATUS = { keyDown:false };
@@ -55,6 +62,7 @@ $(window).keydown(function (e) {
   if (KEY_CODES[e.keyCode]) {
     e.preventDefault();
     KEY_STATUS[KEY_CODES[e.keyCode]] = false;
+    onKeyUp(e.keyCode);
   }
 });
 
@@ -83,8 +91,13 @@ var context = canvas[0].getContext("2d");
 
 SFX = {
 chirp:     new Audio('mp3/02chirp.mp3'),
-music1:    new Audio('mp3/orangefreesounds_magic-bells-music-loop.mp3')
+music1:    new Audio('mp3/orangefreesounds_magic-bells-music-loop.mp3'),
+music2:    new Audio('mp3/frankum_electronic-music-loop-002-v2.mp3')
 };
+
+StopFX = {};
+
+var musicType = 0;
 
 // preload audio
 for (var sfx in SFX) {
@@ -98,6 +111,11 @@ for (var sfx in SFX) {
             }, true);
         }
      
+        StopFX[sfx] = function() {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+     
         SFX[sfx] = function () {
             if (!this.muted) {
                 audio.play();
@@ -109,6 +127,19 @@ for (var sfx in SFX) {
      })();
 }
 
+SFX.changeMusic = function() {
+    if(musicType == 0) {
+        StopFX.music1();
+        SFX.music2();
+        musicType = 1;
+    }
+    else {
+        StopFX.music2();
+        SFX.music1();
+        musicType = 0;
+    }
+}
+
 SFX.muted = false;
 
 //=======================
@@ -116,8 +147,8 @@ SFX.muted = false;
 //=======================
 
 Camera = function() {
-    this.x = -200;
-    this.y = -200;
+    this.x = 0;
+    this.y = 0;
     
     this.render = function(asset, posx, posy, rot) {
         context.save();
@@ -157,6 +188,7 @@ Player = function(asset, name) {
     
     // The sprite for this player
     this.asset = asset;
+    this.spritenum = 0;
     this.sprite = new Image();
     this.sprite.src = asset;
     this.sprite.onload = function(me) {
@@ -189,7 +221,8 @@ Player = function(asset, name) {
         this.pos.x += this.vel.x;
         this.pos.y += this.vel.y;
         
-        if(this.pos.x > X_WALL) {
+        // Disabling camera stuff for now
+        /*if(this.pos.x > X_WALL) {
             this.pos.x = -X_WALL;
             theCamera.x -= X_WALL*2;
         }
@@ -213,6 +246,23 @@ Player = function(asset, name) {
         }
         if(camPos.y < 100 || camPos.y > canvas.height() - 200) {
             theCamera.y += this.vel.y;
+        }*/
+        
+        var myPos = {x: this.pos.x/* - this.sprite.width/2*/,
+                     y: this.pos.y/* + this.sprite.height/2*/};
+        
+        if(myPos.x > 800) {
+            this.pos.x = 0;
+        }
+        else if(myPos.x < 0) {
+            this.pos.x = 800;
+        }
+        
+        if(myPos.y > 500) {
+            this.pos.y = 0;
+        }
+        else if(myPos.y < 0) {
+            this.pos.y = 500;
         }
         
         // Do collision detection
@@ -267,6 +317,22 @@ Player = function(asset, name) {
     
     this.onCollision = function() {
         SFX.chirp();
+    };
+    
+    this.changeSprite = function(newSprite) {
+        this.ready = false;
+        
+        this.sprite = new Image();
+        this.sprite.src = newSprite;
+        this.asset = newSprite;
+        
+        this.sprite.onload = function(me) {
+            me.ready = true;
+            context.drawImage(me.sprite, 0, 0);
+            this.pushToFirebase = function() {
+                myChar.set({'asset': this.asset, 'name': this.name, 'pos':{'x': this.pos.x, 'y': this.pos.y}, 'rot': this.rot});
+            };
+        } (this);
     };
 };
 
@@ -450,5 +516,38 @@ baseData.child('players').on('child_removed', function(snapshot) {
 SFX.music1();
 var np = new AIPlayer("art/player04.png");
 AIPlayerArray[np.player.name] = np;
+
+var currentBackground = 0;
+
+onKeyUp = function(key) {
+    if(KEY_CODES[key] == 'q') {
+        if(currentBackground == 0) {
+            $('#canvas').css("background-image", "url(art/earth-image2.jpg)");
+            currentBackground = 1;
+        }
+        else if(currentBackground == 1) {
+            $('#canvas').css("background-image", "url(art/lights-spain.jpg)");
+            currentBackground = 2;
+        }
+        else if(currentBackground == 2) {
+            $('#canvas').css("background-image", "url(art/lights-sf.jpg)");
+            currentBackground = 3;
+        }
+        else {
+            $('#canvas').css("background-image", "url(art/lights-shanghai.jpg)");
+            currentBackground = 0;
+        }
+    }
+    else if(KEY_CODES[key] == 'w') {
+        SFX.changeMusic();
+    }
+    else if(KEY_CODES[key] == 's') {
+        p1.spritenum += 1;
+        if(p1.spritenum > 7) {
+            p1.spritenum = 0;
+        }
+        p1.changeSprite("art/player0" + p1.spritenum + ".png");
+    }
+};
 
 main();
