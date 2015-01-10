@@ -326,12 +326,11 @@ Player = function(asset, name) {
         this.sprite.src = newSprite;
         this.asset = newSprite;
         
+        myChar.set({'asset': this.asset, 'name': this.name, 'pos':{'x': this.pos.x, 'y': this.pos.y}, 'rot': this.rot});
+        
         this.sprite.onload = function(me) {
             me.ready = true;
             context.drawImage(me.sprite, 0, 0);
-            this.pushToFirebase = function() {
-                myChar.set({'asset': this.asset, 'name': this.name, 'pos':{'x': this.pos.x, 'y': this.pos.y}, 'rot': this.rot});
-            };
         } (this);
     };
 };
@@ -396,8 +395,11 @@ var AIPlayer = function(asset) {
 };
 
 var doAIMove = function(player) {
-    var posx = Math.floor(1.5*X_WALL*Math.random()) - X_WALL;
-    var posy = Math.floor(1.5*Y_WALL*Math.random()) - Y_WALL;
+    /*var posx = Math.floor(1.5*X_WALL*Math.random()) - X_WALL;
+    var posy = Math.floor(1.5*Y_WALL*Math.random()) - Y_WALL;*/
+    
+    var posx = Math.floor(700*Math.random()) + 50;
+    var posy = Math.floor(400*Y_WALL*Math.random()) + 50;
     player.doMoveTo(posx, posy);
 };
 
@@ -501,6 +503,9 @@ baseData.child('players').on('child_changed', function(snapshot) {
     otherPlayers[data.name].pos.x = data.pos.x;
     otherPlayers[data.name].pos.y = data.pos.y;
     otherPlayers[data.name].rot = data.rot;
+    if(otherPlayers[data.name].asset != data.asset) {
+        otherPlayers[data.name].changeSprite(data.asset);
+    }
 });
 
 baseData.child('players').on('child_removed', function(snapshot) {
