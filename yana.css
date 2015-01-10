@@ -1,0 +1,49 @@
+body {
+  font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background: url("earth-image2.jpg");
+  width: 1024px;
+  font-size: 16px;
+  color: #c0c0c0;
+}
+
+A:link {text-decoration: none; color: yellow}
+A:visited {text-decoration: none; color: yellow}
+A:active {text-decoration: none; color: yellow}
+A:hover {text-decoration: underline; color: white;}
+
+#asteroids {
+  width: 100%;
+}
+
+#game-container {
+  width:800px;
+  float:left;
+  clear:both;
+}
+
+#right-pane {
+    margin-left: 40px;
+}
+
+.middle {
+  display:inline-block;
+  vertical-align:middle;
+}
+
+#canvas {
+  position:relative;
+  border: 8px solid #424547;
+  margin: 2px;
+  color: #424547;
+  background: url("lights-shanghai.jpg");
+  float:left;
+}
+
+.button {
+  position:absolute;
+  border:1px solid black;
+}
+
+.left {
+    float:left;
+}
