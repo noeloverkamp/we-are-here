@@ -374,9 +374,9 @@ var AIPlayer = function(asset) {
         var dist = Math.sqrt((myPos.x - playerPos.x) * (myPos.x - playerPos.x) +
                              (myPos.y - playerPos.y) * (myPos.y - playerPos.y));
         
-        var rotRate = 0;
-        if(dist < 200) {
-            rotRate = dist / 1000.0;
+        var rotRate = 0.0;
+        if(dist < 200.0) {
+            rotRate = (1.0/(dist+1.0)) * 2.0;
         }
         
         this.player.rot += rotRate;
@@ -399,7 +399,7 @@ var doAIMove = function(player) {
     var posy = Math.floor(1.5*Y_WALL*Math.random()) - Y_WALL;*/
     
     var posx = Math.floor(700*Math.random()) + 50;
-    var posy = Math.floor(400*Y_WALL*Math.random()) + 50;
+    var posy = Math.floor(400*Math.random()) + 50;
     player.doMoveTo(posx, posy);
 };
 
