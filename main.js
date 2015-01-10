@@ -82,8 +82,6 @@ var context = canvas[0].getContext("2d");
 //===============
 
 SFX = {
-laser:     new Audio('39459__THE_bizniss__laser.wav'),
-explosion: new Audio('51467__smcameron__missile_explosion.wav'),
 chirp:     new Audio('mp3/02chirp.mp3'),
 music1:    new Audio('mp3/orangefreesounds_magic-bells-music-loop.mp3')
 };
@@ -272,7 +270,7 @@ Player = function(asset, name) {
     };
 };
 
-var p1 = new Player("player01.png");
+var p1 = new Player("art/player00.png");
 var otherPlayers = [];
 
 //===============
@@ -450,7 +448,7 @@ baseData.child('players').on('child_removed', function(snapshot) {
 //======
 
 SFX.music1();
-var np = new AIPlayer("playershape008aaaaaaa copy.png");
+var np = new AIPlayer("art/player04.png");
 AIPlayerArray[np.player.name] = np;
 
 main();

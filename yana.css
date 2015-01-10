@@ -1,6 +1,6 @@
 body {
   font-family: "proxima-nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
-  background: url("earth-image2.jpg");
+  background: url("art/earth-image2.jpg");
   width: 1024px;
   font-size: 16px;
   color: #c0c0c0;
@@ -35,7 +35,7 @@ A:hover {text-decoration: underline; color: white;}
   border: 8px solid #424547;
   margin: 2px;
   color: #424547;
-  background: url("lights-shanghai.jpg");
+  background: url("art/lights-shanghai.jpg");
   float:left;
 }
 
