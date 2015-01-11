@@ -120,7 +120,11 @@ for (var sfx in SFX) {
             if (!this.muted) {
                 audio.play();
                 audio.muted = false;
-                audio.currentTime = 0;
+                try {
+                    audio.currentTime = 0;
+                } catch(e) {
+                    // Do something?
+                }
             }
             return audio;
         }
